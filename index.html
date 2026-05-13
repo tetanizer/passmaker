@@ -3,21 +3,80 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>passmaker.ru — генератор паролей</title>
+    <title>Генератор паролей онлайн бесплатно | passmaker.ru</title>
+    <meta
+      name="description"
+      content="passmaker.ru — бесплатный генератор сложных паролей в браузере: длина до 64 символов, до 500 строк, исключение неоднозначных символов (0/O, 1/l/I и др.), копирование и скачивание .txt. Без регистрации."
+    />
+    <meta
+      name="keywords"
+      content="генератор паролей, пароль онлайн, сложный пароль, безопасный пароль, случайный пароль, passmaker, кириллица"
+    />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="author" content="passmaker.ru" />
+    <meta name="theme-color" content="#7ec4c4" />
+    <link rel="canonical" href="https://passmaker.ru/" />
+    <link rel="alternate" hreflang="ru" href="https://passmaker.ru/" />
+    <link rel="alternate" hreflang="x-default" href="https://passmaker.ru/" />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="passmaker.ru" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:url" content="https://passmaker.ru/" />
+    <meta property="og:title" content="Генератор паролей онлайн бесплатно | passmaker.ru" />
+    <meta
+      property="og:description"
+      content="Создавайте надёжные пароли в браузере: настройка алфавита и длины, исключение похожих символов, копирование и экспорт списка. Без сервера — только ваше устройство."
+    />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Генератор паролей онлайн | passmaker.ru" />
+    <meta
+      name="twitter:description"
+      content="Бесплатный генератор сложных паролей: до 64 символов, исключение неоднозначных знаков, скачивание списка."
+    />
+
     <link rel="stylesheet" href="fonts.css" />
     <link rel="stylesheet" href="style.css" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "passmaker.ru — генератор паролей",
+        "url": "https://passmaker.ru/",
+        "description": "Онлайн-сервис генерации сложных паролей с настройкой длины, набора символов и исключением неоднозначных знаков. Работает в браузере без регистрации.",
+        "applicationCategory": "SecurityApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "inLanguage": "ru-RU",
+        "isAccessibleForFree": true,
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "RUB"
+        }
+      }
+    </script>
   </head>
   <body>
     <header class="site-header">
       <div class="site-header__inner">
-        <span class="site-header__logo" aria-hidden="true">🔒</span>
-        <span class="site-header__title">passmaker.ru</span>
+        <div class="site-header__brand">
+          <span class="site-header__logo" aria-hidden="true">🔒</span>
+          <span class="site-header__title">passmaker.ru</span>
+        </div>
+        <h1 class="site-header__h1">Генератор надёжных паролей онлайн</h1>
+        <p class="site-header__lead">
+          Бесплатный сервис без регистрации: задайте длину и количество паролей, выберите буквы, цифры и спецсимволы, при необходимости исключите похожие знаки (например 0 и O). Скопируйте каждую строку или скачайте весь список в файл.
+        </p>
       </div>
     </header>
 
-    <main class="layout">
-      <section class="card card--settings" aria-labelledby="settings-title">
-        <h1 id="settings-title" class="card__title">Настройки генерации</h1>
+    <main class="layout" id="main-content">
+      <section class="card card--settings" aria-labelledby="settings-heading">
+        <h2 id="settings-heading" class="card__title">Настройки генерации</h2>
 
         <div class="field">
           <label class="field__label" for="length">Длина пароля</label>
