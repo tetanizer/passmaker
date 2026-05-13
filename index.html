@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>passmaker.ru — генератор паролей</title>
+    <link rel="stylesheet" href="fonts.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <span class="site-header__logo" aria-hidden="true">🔒</span>
+        <span class="site-header__title">passmaker.ru</span>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="card card--settings" aria-labelledby="settings-title">
+        <h1 id="settings-title" class="card__title">Настройки генерации</h1>
+
+        <div class="field">
+          <label class="field__label" for="length">Длина пароля</label>
+          <div class="length-row">
+            <div class="slider-wrap">
+              <input
+                type="range"
+                id="length"
+                class="slider"
+                min="8"
+                max="64"
+                value="32"
+                step="1"
+                list="length-ticks"
+              />
+              <datalist id="length-ticks">
+                <option value="8" label="8"></option>
+                <option value="16" label="16"></option>
+                <option value="20" label="20"></option>
+                <option value="48" label="48"></option>
+                <option value="64" label="64"></option>
+              </datalist>
+              <div class="slider-ticks" aria-hidden="true">
+                <span>8</span><span>16</span><span>20</span><span>48</span><span>64</span>
+              </div>
+            </div>
+            <input
+              type="number"
+              id="length-input"
+              class="input input--number"
+              min="8"
+              max="64"
+              value="32"
+              aria-label="Длина пароля, число"
+            />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="count">Количество паролей</label>
+          <input
+            type="number"
+            id="count"
+            class="input"
+            min="1"
+            max="500"
+            value="5"
+          />
+        </div>
+
+        <fieldset class="options">
+          <legend class="visually-hidden">Наборы символов</legend>
+          <label class="checkbox">
+            <input type="checkbox" id="opt-upper" checked />
+            <span class="checkbox__box" aria-hidden="true"></span>
+            <span>Прописные буквы (A–Z)</span>
+          </label>
+          <label class="checkbox">
+            <input type="checkbox" id="opt-lower" checked />
+            <span class="checkbox__box" aria-hidden="true"></span>
+            <span>Строчные буквы (a–z)</span>
+          </label>
+          <label class="checkbox">
+            <input type="checkbox" id="opt-digits" checked />
+            <span class="checkbox__box" aria-hidden="true"></span>
+            <span>Цифры (0–9)</span>
+          </label>
+          <label class="checkbox">
+            <input type="checkbox" id="opt-special" checked />
+            <span class="checkbox__box" aria-hidden="true"></span>
+            <span>Спецсимволы (&amp;, @, #...)</span>
+          </label>
+          <label class="checkbox">
+            <input type="checkbox" id="opt-strict-ambiguous" />
+            <span class="checkbox__box" aria-hidden="true"></span>
+            <span>Исключение неоднозначных символов</span>
+          </label>
+        </fieldset>
+
+        <p id="error-msg" class="error" role="alert" hidden></p>
+
+        <button type="button" id="btn-generate" class="btn btn--primary">
+          Сгенерировать пароли
+        </button>
+        <button type="button" id="btn-save" class="btn btn--outline btn--save-params">
+          Сохранить параметры
+        </button>
+      </section>
+
+      <section class="card card--results" aria-labelledby="results-title">
+        <h2 id="results-title" class="card__title">Ваши пароли</h2>
+        <ul id="password-list" class="password-list"></ul>
+        <button type="button" id="btn-download" class="btn btn--outline" disabled>
+          Скачать список паролей
+        </button>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="site-footer__inner">
+        <a
+          class="site-footer__link"
+          href="https://github.com/tetanizer/passmaker"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Исходный код на GitHub</a>
+      </div>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

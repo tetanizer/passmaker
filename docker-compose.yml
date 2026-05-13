@@ -1,0 +1,11 @@
+# Локальная сборка из Dockerfile (см. scripts/docker-build.*).
+# Образ из GitHub Container Registry после CI:
+#   image: ghcr.io/<владелец>/passmaker:main
+#   (строка build: ниже удаляется или комментируется)
+services:
+  passmaker:
+    build: .
+    image: passmaker:latest
+    ports:
+      - "8080:80"
+    restart: unless-stopped
