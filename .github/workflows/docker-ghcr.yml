@@ -17,6 +17,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+    outputs:
+      image_name: ${{ steps.image.outputs.name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -53,3 +55,116 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Save image tags for release draft
+        if: github.event_name != 'pull_request'
+        run: |
+          printf '%s\n' '${{ steps.meta.outputs.tags }}' > image-tags.txt
+
+      - name: Upload image tags artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-tags
+          path: image-tags.txt
+          retention-days: 2
+
+  draft-release:
+    needs: build-and-push
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download image tags
+        uses: actions/download-artifact@v4
+        with:
+          name: image-tags
+          path: .
+
+      - name: Build release notes
+        env:
+          IMAGE_NAME: ${{ needs.build-and-push.outputs.image_name }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          TAGS="$(cat image-tags.txt)"
+          {
+            echo "## Образ в GitHub Container Registry"
+            echo
+            echo "Реестр: **\`${IMAGE_NAME}\`**"
+            echo
+            echo "### Примеры"
+            echo
+            echo '```bash'
+            echo "docker pull ${IMAGE_NAME}:main"
+            echo "docker pull ${IMAGE_NAME}:sha-${SHA:0:7}"
+            echo '```'
+            echo
+            echo "### Теги для этого запуска"
+            echo
+            echo '```'
+            echo "${TAGS}"
+            echo '```'
+            echo
+            echo "## CHANGELOG"
+            echo
+            echo "Полный файл: [\`CHANGELOG.md\`](https://github.com/${REPO}/blob/${SHA}/CHANGELOG.md)"
+            echo
+            if [[ "${REF_TYPE}" == "tag" && "${REF_NAME}" == v* ]]; then
+              echo "### Фрагмент для ${REF_NAME}"
+              echo
+              SECTION="$(awk -v rn="${REF_NAME}" '
+                index($0, "## [" rn "]") == 1 { p=1; next }
+                /^## \[/ && p { exit }
+                p
+              ' CHANGELOG.md 2>/dev/null || true)"
+              if [[ -n "${SECTION}" ]]; then
+                echo "${SECTION}" | head -n 120
+              else
+                echo "_Секция \`## [${REF_NAME}]\` не найдена — добавьте её в CHANGELOG.md._"
+              fi
+            fi
+          } > release-body.md
+
+      - name: Rolling tag for branch (continuous draft)
+        if: github.ref_type == 'branch'
+        run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git tag -f continuous-draft "${{ github.sha }}"
+          git push origin continuous-draft --force
+
+      - name: Create or update draft release (semver tag)
+        if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v')
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          tag_name: ${{ github.ref_name }}
+          name: "Черновик ${{ github.ref_name }}"
+          body_path: release-body.md
+          generate_release_notes: false
+          allowUpdates: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create or update draft release (rolling, main/master)
+        if: github.ref_type == 'branch'
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          tag_name: continuous-draft
+          name: "Черновик образа (ветка ${{ github.ref_name }})"
+          body_path: release-body.md
+          generate_release_notes: false
+          allowUpdates: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
